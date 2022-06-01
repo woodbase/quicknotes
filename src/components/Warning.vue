@@ -11,7 +11,7 @@
           </div>
           <div class="col ml-5">
             <b-button
-              variant="danger"
+              style="background-color: red; border-color: white; color: white"
               @click="$emit('hideWarning')"
               class="px-5"
               >No</b-button
@@ -22,6 +22,7 @@
               variant="outline-light"
               @click="confirmDelete"
               class="px-5"
+              style="color: red; background-color: white"
               >Yes</b-button
             >
           </div>

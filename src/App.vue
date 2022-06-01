@@ -57,10 +57,10 @@ export default class App extends Vue {
     this.updateList();
     this.showDeleteWarning(false);
   }
-  updateList() {
-    fetch("http://localhost:8085/notes")
-      .then((response) => response.json())
-      .then((data) => (this.dataList = data));
+  async updateList() {
+    let result = await fetch("http://localhost:8085/notes");
+    let response = await result.json();
+    this.dataList = await response;
   }
   mounted() {
     this.updateList();
