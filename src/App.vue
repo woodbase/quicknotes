@@ -4,6 +4,7 @@
       @addNote="showAddNote"
       @deleteNote="deleteNote"
       :notes="dataList"
+      ref="noteslist"
     ></NoteList>
     <AddNote
       @hideNote="showAddNote(false)"
@@ -25,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Ref, Vue } from "vue-property-decorator";
 import NoteList, { Note } from "./components/NoteList.vue";
 import AddNote from "./components/AddNote.vue";
 import Warning from "./components/Warning.vue";
@@ -38,6 +39,7 @@ import Warning from "./components/Warning.vue";
   },
 })
 export default class App extends Vue {
+  @Ref("noteslist") notelistref!: NoteList;
   addNoteVisible = false;
   deleteNoteVisible = false;
   deleteNotes: Note[] = [];
@@ -53,14 +55,17 @@ export default class App extends Vue {
     this.deleteNotes = notes;
     if (this.deleteNotes.length === 0) this.showDeleteWarning(false);
   }
-  deleteComplete() {
-    this.updateList();
-    this.showDeleteWarning(false);
+  async deleteComplete() {
+    if (await this.updateList()) {
+      this.showDeleteWarning(false);
+      this.notelistref.clearAllSelection(this.dataList);
+    }
   }
   async updateList() {
     let result = await fetch("http://localhost:8085/notes");
     let response = await result.json();
     this.dataList = await response;
+    return true;
   }
   mounted() {
     this.updateList();

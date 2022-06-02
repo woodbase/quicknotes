@@ -65,7 +65,6 @@ app.post("/addNote", (req: Request, res: Response) => {
 
 app.post("/deleteNotes", (req: Request, res: Response) => {
   const idsToDelete: number[] = req.body.notes;
-
   notes = notes.filter((x) => idsToDelete.indexOf(x.id) === -1);
   res.sendStatus(200);
 });

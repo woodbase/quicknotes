@@ -3,6 +3,7 @@
     <Statistics :noteList="notes" />
     <div class="row">
       <b-table
+        v-if="renderComponent"
         class="table table-hover text-left"
         :items="modedNotes"
         :fields="fields"
@@ -10,6 +11,7 @@
         :sort-desc.sync="sortDesc"
         sort-icon-right
         fixed
+        ref="noteslist"
         head-variant="light"
       >
         <template #head(id)="head">
@@ -37,22 +39,6 @@
         >
       </div>
     </div>
-    <b-toast id="my-toast" variant="warning" solid>
-      <template #toast-title>
-        <div class="d-flex flex-grow-1 align-items-baseline">
-          <b-img
-            blank
-            blank-color="#ff5555"
-            class="mr-2"
-            width="12"
-            height="12"
-          ></b-img>
-          <strong class="mr-auto">Notice!</strong>
-          <small class="text-muted mr-2">42 seconds ago</small>
-        </div>
-      </template>
-      This is the content of the toast. It is short and to the point.
-    </b-toast>
   </div>
 </template>
 
@@ -76,6 +62,7 @@ export interface Note {
 export default class NoteList extends Vue {
   sortBy = "id";
   sortDesc = false;
+  renderComponent = true;
   fields = [
     { key: "id", sortable: true },
     { key: "title", sortable: true },
@@ -102,6 +89,14 @@ export default class NoteList extends Vue {
       this.toggleDelete(checked, x);
     });
     this.$emit("deleteNote", this.selected);
+  }
+  clearAllSelection(notes: Note[]) {
+    this.selected = [];
+    this.modedNotes = notes;
+    this.renderComponent = false;
+    this.$nextTick(() => {
+      this.renderComponent = true;
+    });
   }
   addNote() {
     this.$emit("addNote", true);
